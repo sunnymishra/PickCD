@@ -1,0 +1,7 @@
+{ 
+	"mailhost": "smtp.gmail.com", // hostname
+    "mailsecureConnection": true, // use SSL
+    "mailport": 465, // port for secure SMTP
+    "mailuser": "sunny.leotechno@gmail.com",
+    "mailpass": "unknowns"
+}
