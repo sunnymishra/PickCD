@@ -1,6 +1,6 @@
 var connectionPool = require('../util/databaseDriver.js').DatabaseDriver.connectionPool;
 var path = require('path');
-var log = require(path.join(path.dirname(require.main.filename),'../lib/logger.js'));
+var log = require(path.join(path.dirname(require.main.filename),'./lib/logger.js'));
 
 UserRepository = function() {
 };

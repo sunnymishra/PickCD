@@ -6,7 +6,7 @@ var dateFormat = require('dateformat');
 var nodemailer = require('nodemailer');
 var nconf = require('nconf');
 var path = require('path');
-var log = require(path.join(path.dirname(require.main.filename),'../lib/logger.js'));
+var log = require(path.join(path.dirname(require.main.filename),'./lib/logger.js'));
 
 function AccountService() {};
 

@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var path = require('path');
-var dbconfig = require(path.join(path.dirname(require.main.filename),'../resources/db.json'));
+var dbconfig = require(path.join(path.dirname(require.main.filename),'./resources/db.json'));
 
 DatabaseDriver = function() {
 };

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-var log = require(path.join(path.dirname(require.main.filename),'../lib/logger.js'));
+var log = require(path.join(path.dirname(require.main.filename),'./lib/logger.js'));
 var GoalService = require('../service/GoalService.js').GoalService;
 
 router.get('/mygoallist', function(req, res) {

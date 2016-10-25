@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-var log = require(path.join(path.dirname(require.main.filename),'../lib/logger.js'));
+var log = require(path.join(path.dirname(require.main.filename),'./lib/logger.js'));
 var AccountService = require('../service/AccountService.js').AccountService;
 
 router.post('/account', function(req, res) {
