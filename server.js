@@ -8,6 +8,8 @@ var compression = require('compression');
 
 var accountRoutes = require('./src/routes/AccountRoutes');
 var goalRoutes = require('./src/routes/GoalRoutes');
+var userRoutes = require('./src/routes/UserRoutes');
+
 var MongoClient = require("mongodb").MongoClient;
 
 var log = require('./lib/logger');
@@ -19,7 +21,6 @@ nconf.argv().env();
 nconf.file({ file: './resources/config.json' });
 // Provide default values for settings not provided above.
 nconf.defaults(); // You can put any object of default values in this
-
 
 var app = express();
 
@@ -45,8 +46,9 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneDay }));
 // Add content compression middleware for static files
 app.use(compression());
 
-app.use('/focusroot/webservice/account', accountRoutes);
-app.use('/focusroot/webservice/goal', goalRoutes);
+app.use('/pickCD/api/account', accountRoutes);
+app.use('/pickCD/api/goal', goalRoutes);
+app.use('/pickCD/api/user', userRoutes);
 
 app.get('/errortest', function(req, res, next){
     next(new Error('Test error!'));
@@ -98,16 +100,3 @@ function onListening() {
 
 var server = app.listen(nconf.get('port') || 3000, onListening); // This will start the server and listen to given Port
 
-MongoClient.connect('mongodb://localhost:27017/?connectTimeoutMS=300000', function (err, database) {
-  if (err) {
-    console.log(err);
-    process.exit(1);
-  }
-
-  // Save database object from the callback for reuse.
-  app.db = database;
-  console.log("Database connection ready");
-  log.debug('Database connection ready');
-});
-
-/*module.exports = app;*/

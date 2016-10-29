@@ -1,4 +1,4 @@
-var connectionPool = require('../util/databaseDriver.js').DatabaseDriver.connectionPool;
+var connectionPool = require('../util/databaseDriver.js').DatabaseDriver.mysqlconnectionPool;
 var path = require('path');
 var log = require(path.join(path.dirname(require.main.filename),'./lib/logger.js'));
 var nconf = require('nconf');
