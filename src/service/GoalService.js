@@ -1,5 +1,5 @@
-var GoalRepository = require('../database/GoalRepository.js').GoalRepository;
-var UserRepository = require('../database/UserRepository.js').UserRepository;
+var GoalRepository = require('../models/GoalRepository.js').GoalRepository;
+var UserRepository = require('../models/UserRepository.js').UserRepository;
 var nconf = require('nconf');
 var path = require('path');
 var log = require(path.join(path.dirname(require.main.filename),'./lib/logger.js'));

@@ -13,7 +13,7 @@ router.post('/account', function(req, res) {
     	} else {
         	res.json(result);
       }
-   	};
+ 	};
    	
 	AccountService.register(user, registerCallback);
   log.debug('exiting from /account register router');

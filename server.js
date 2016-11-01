@@ -10,7 +10,17 @@ var accountRoutes = require('./src/routes/AccountRoutes');
 var goalRoutes = require('./src/routes/GoalRoutes');
 var userRoutes = require('./src/routes/UserRoutes');
 
-var MongoClient = require("mongodb").MongoClient;
+var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/pickCDdev1?connectTimeoutMS=60000');
+mongoose.connection.on('error', function(err) {
+  console.log('Mongoose DB connection error. ' + err);
+  log.debug('Mongoose DB connection error.');
+});
+mongoose.connection.on('open', function() {
+  console.log('Mongoose DB connected.');
+  log.debug('Mongoose DB connected.');
+});
 
 var log = require('./lib/logger');
 

@@ -23,7 +23,8 @@
     "dateformat":"^1.0.12",
     "request":"^2.75.0",
     "compression":"^1.6.2",
-    "mongodb":"^2.2.11"
+    "mongodb":"^2.2.11",
+    "mongoose":"^4.6.5"
   },
 
   "devDependencies": {

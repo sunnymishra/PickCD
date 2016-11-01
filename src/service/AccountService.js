@@ -1,4 +1,4 @@
-var UserRepository = require('../database/UserRepository.js').UserRepository;
+var UserRepository = require('../models/UserRepository.js').UserRepository;
 var DatabaseError = require('../exception/CustomException.js').CustomException.databaseError;
 var Util = require('../util/util.js');
 var Util = Util();
