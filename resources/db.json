@@ -1,8 +1,0 @@
-{
-	"dbconnectionLimit":100,
-	"dbhost":"127.0.0.1",
-	"dbuser":"sunny",
-	"dbpassword":"sunny",
-	"dbdatabase":"mydb",
-	"dbdebug":false
-}

@@ -1,7 +1,0 @@
-{
-	"environment":"development",
-	"port":"8770",
-	"keySalt":"whitezebra@123",
-	"myDateFormat":"yyyy-mm-dd",
-	"response.duplicateUsername":402
-}
