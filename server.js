@@ -10,9 +10,10 @@ var accountRoutes = require('./src/routes/AccountRoutes');
 var goalRoutes = require('./src/routes/GoalRoutes');
 var userRoutes = require('./src/routes/UserRoutes');
 
+var log = require('./lib/logger');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/pickCDdev1?connectTimeoutMS=60000');
+mongoose.connect('mongodb://127.0.0.1/pickCDdev1?connectTimeoutMS=60000');
 mongoose.connection.on('error', function(err) {
   console.log('Mongoose DB connection error. ' + err);
   log.debug('Mongoose DB connection error.');
@@ -22,7 +23,7 @@ mongoose.connection.on('open', function() {
   log.debug('Mongoose DB connected.');
 });
 
-var log = require('./lib/logger');
+
 
 var nconf = require('nconf');
 // First consider commandline arguments and environment variables, respectively.
