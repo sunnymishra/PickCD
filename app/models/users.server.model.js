@@ -6,7 +6,8 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto');
-
+require('mongoose-double')(mongoose);
+var SchemaTypes = mongoose.Schema.Types;
 /**
  * A Validation function for local strategy properties
  */
@@ -96,7 +97,7 @@ var UserSchema = new Schema({
 					/*Use virtual to concatenate CountryCode-MobileNumber*/
 				},
 				mNumber: {
-					type: String,
+					type: Number,
 					trim: true,
 					default: '',
 					validate: [validateLocalStrategyProperty, 'Empty mobile no.'],
@@ -112,14 +113,13 @@ var UserSchema = new Schema({
 	},
 	customer:{
 		locations:[{
-			type:{
+			name:{
 				type: String,
 				enum: ['source', 'destination']
 			},
-			name:String,
 			address:String,
-			lat:String,
-			long:String,
+			lat:SchemaTypes.Double,
+			long:SchemaTypes.Double,
 			landmark:String,
 			isActive:{
 				type:Boolean,
@@ -135,7 +135,7 @@ var UserSchema = new Schema({
 		photoPath:String,
 		transportType:{
 				type: String,
-				enum: ['ownTransport', 'publicTransport']
+				enum: ['own','public']
 		},
 		identity:[{
 			docPath:String,

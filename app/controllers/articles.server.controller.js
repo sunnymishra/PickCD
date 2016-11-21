@@ -36,7 +36,7 @@ var getErrorMessage = function(err) {
  */
 exports.create = function(req, res) {
 	var article = new Article(req.body);
-	article.user = req.user;
+	article.user = req.user._id;
 
 	article.save(function(err) {
 		if (err) {
