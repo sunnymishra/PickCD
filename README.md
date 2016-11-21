@@ -7,29 +7,30 @@ Enabling a peer-to-peer parcel delivery system by creating a marketplace through
 ### User APIs
 
 * Get Customer profile (including favorite Locations)
-	```
-	URL: account/register
-	METHOD: POST
-	Content-Type:application/json
-	Request:
+
+```
+URL: account/register
+METHOD: POST
+Content-Type:application/json
+Request:
+{
+	"userName":"Sunny",
+	"password":"sunny"
+}
+RESPONSE Success:
+	STATUS: 200 OK
+	RESPONSE JSON Body:
    {
-		"userName":"Sunny",
-		"password":"sunny"
+		"userId": 12
    }
-	RESPONSE Success:
-		STATUS: 200 OK
-		RESPONSE JSON Body:
-	   {
-			"userId": 12
-	   }
-	RESPONSE Failure:
-		STATUS: 409 CONFLICT
-		RESPONSE JSON Body:
-	   {
-			"ERROR": "error"
-	   }
-	```
-	
+RESPONSE Failure:
+	STATUS: 409 CONFLICT
+	RESPONSE JSON Body:
+   {
+		"ERROR": "error"
+   }
+```
+
 ### Delivery APIs
 
 * Get favorite location for a given current location (Homescreen Pickup box):
