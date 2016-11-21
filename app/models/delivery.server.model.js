@@ -48,14 +48,12 @@ var DeliverySchema = new Schema({
 	sourceLocation:{
 		name:String,
 		address:String,
-		lat:SchemaTypes.Double,
-		long:SchemaTypes.Double
+		geoLoc:[SchemaTypes.Double]
 	},
 	destLocation:{
 		name:String,
 		address:String,
-		lat:SchemaTypes.Double,
-		long:SchemaTypes.Double
+		geoLoc:[SchemaTypes.Double]
 	},
 	deliveryType:{
 		type: {

@@ -118,8 +118,7 @@ var UserSchema = new Schema({
 				enum: ['source', 'destination']
 			},
 			address:String,
-			lat:SchemaTypes.Double,
-			long:SchemaTypes.Double,
+			geoLoc:[SchemaTypes.Double],
 			landmark:String,
 			isActive:{
 				type:Boolean,
