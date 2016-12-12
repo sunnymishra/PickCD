@@ -112,10 +112,10 @@ var UserSchema = new Schema({
 		}
 	},
 	customer:{
-		locations:[{
+		favoriteAddress:[{
 			name:{
 				type: String,
-				enum: ['source', 'destination']
+				enum: ['home', 'work', 'other']
 			},
 			address:String,
 			geoLoc:[SchemaTypes.Double],
@@ -124,6 +124,33 @@ var UserSchema = new Schema({
 				type:Boolean,
 				default: true
 			}
+		}],
+		delivery:[{
+			_id:Schema.ObjectId,
+			pickupDatetime:{
+				actualDatetime:{
+					type: Date
+				}
+			},
+			sourceLocation:{
+				name:String,
+				address:String,
+				geoLoc:[SchemaTypes.Double]
+			},
+			destLocation:{
+				name:String,
+				address:String,
+				geoLoc:[SchemaTypes.Double]
+			},
+			deliveryType:String,
+			parcel:{
+				weight:SchemaTypes.Double,
+				size:String,
+				description:String,
+				instruction:String
+			},
+			approxDistance:SchemaTypes.Double,
+			deliveryStatus:String
 		}]
 	},
 	isCarrier: {

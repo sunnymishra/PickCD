@@ -35,6 +35,8 @@ RESPONSE Failure:
 
 * Get favorite location for a given current location (Homescreen Pickup box):
 	If this API returns null, show current location in pickup box, else show Favorite loc name
+	If favorite location is used for a Delivery, put it on top of 5 Favorite location array in DB
+* Save favorite location for a user. Total 5 favorites allowed in User collection.
 * Get drop for a pickup location (Homescreen)
 * Get google map geo search, for keywords (add city and country)
 	Returns list of options

@@ -1,0 +1,138 @@
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+#map_canvas {
+	height: 100%;
+}
+.mainContainer {
+	height: 75%;
+	width:50%;
+	margin: auto;
+	padding: 5px;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+.centerMarker{
+	position:absolute;
+	/*url of the marker*/
+	background:url(http://maps.gstatic.com/mapfiles/markers2/marker.png) no-repeat;
+	/*center the marker*/
+	top:50%;left:50%;
+
+	z-index:1;
+	/*fix offset when needed*/
+	margin-left:-10px;
+	margin-top:-34px;
+	/*size of the image*/
+	height:34px;
+	width:20px;
+	cursor:pointer;
+}
+.controls {
+	margin-top: 10px;
+	border: 2px solid transparent;
+	border-radius: 2px 0 0 2px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	height: 32px;
+	outline: none;
+	box-shadow: 0 2px 9px rgba(0, 0, 0, 0.4);
+	
+	background-color: #fff;
+	font-family: Roboto;
+	font-size: 15px;
+	font-weight: 300;
+	margin-left: 12px;
+	padding: 0 11px 0 13px;
+	text-overflow: ellipsis;
+	width: 500px;
+}
+#fromAddress{
+	border-color: #ff7f7f;
+}
+#fromAddress:focus{
+	border-color: #ff6f6f;
+}
+#destAddress{
+	border-color: #82b1fe;
+}
+#destAddress:focus {
+	border-color: #5e9bfe;
+}
+/* Following 2 css are jquery-ui default classes. Overriding for time-slider div.*/
+.ui-widget-header {
+	background: #89e589;
+}
+.ui-slider-horizontal .ui-slider-handle {
+	top: -1px;
+}
+/* Following css for Screen 2 Overlapping cascade Fav places and Prev places list */
+.label-font {
+	padding: 12px;
+	color: #9199a1;
+	font-size: 14px;
+}
+div.location-stack{
+	margin-top: 5px;
+}
+.location-stack ul{
+	list-style-type: none;
+	margin: 0px;
+	padding: 8px
+}
+.location-stack li{
+	position: relative;
+	margin-top: -4px;
+	cursor:pointer;
+	border: 2px solid transparent;
+	border-radius: 2px 0 0 2px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+
+	outline: none;
+	box-shadow: 0 2px 9px rgba(0, 0, 0, 0.4);
+	
+	background-color: #fff;
+	font-family: Roboto;
+	font-size: 15px;
+	font-weight: 300;
+
+	padding: 0 11px 0 13px;
+	height: 30px;
+	line-height: 24px;
+	text-overflow: ellipsis;
+	width: 450px;
+}
+.location-stack li:hover{
+	background: #f0f0f0;
+}
+.location-stack li:nth-child(1) {
+  z-index: 3;
+  margin-left: 10px;
+}
+.location-stack li:nth-child(2) {
+  z-index: 2;
+  margin-left: 17px;
+}
+.location-stack li:nth-child(3) {
+  z-index: 1;
+  margin-left: 24px;
+}
+
+
+.overlay1 {
+	float:left;
+	height: 100%;
+	width:100%;
+	background-color: #dedede;
+	transition: opacity 0.5s ease;
+	-webkit-transition: opacity 0.5s ease;
+	-moz-transition: opacity 0.5s ease;
+	background:rgba(0,0,0,.75);
+	opacity: 1;
+}
+
+
