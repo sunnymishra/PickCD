@@ -1,0 +1,35 @@
+favLocations:[
+	{
+		"id": "fav01",
+		"address": "IBM India Pvt Ltd D3 Block, D' Souza Layout, Ashok Nagar, Vittal Mallya Rd, KG Halli, Bengaluru, Karnataka 560001, India",
+		"latLng": ""
+	},
+	{
+		"id": "fav02",
+		"address": "UB City, Vittal Mallya Road, Sampangi Rama Nagar, Bengaluru, Karnataka, India",
+		"latLng": ""
+	},
+	{
+		"id": "fav03",
+		"address": "Indiranagar Metro Station, Chinmaya Mission Hospital Road, Indiranagar, Bengaluru, Karnataka, India",
+		"latLng": ""
+	}
+]
+
+previousLocations:[
+	{
+		"id": "prev01",
+		"address": "77, MG Road, Haridevpur, Shanthala Nagar, Sampangi Rama Nagar, Bengaluru, Karnataka 560001, India",
+		"latLng": ""
+	},
+	{
+		"id": "prev02",
+		"address": "3, St Marks Rd, Haridevpur, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka 560001, India",
+		"latLng": ""
+	},
+	{
+		"id": "prev03",
+		"address": "2, MG Road, FM Cariappa Colony, Sivanchetti Gardens, Bengaluru, Karnataka 560001, India",
+		"latLng": ""
+	}
+]

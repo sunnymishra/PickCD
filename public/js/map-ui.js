@@ -49,16 +49,18 @@ function showInitMap(position) {
 	// Update global latLng, when user changes map's center by dragging the map
 	globalMapObj.dragendListener = globalMapObj.map.addListener('dragend',function() {
 		globalMapObj.latLngObj = globalMapObj.map.getCenter();
+		// This method will find place name for current latLng and set in From inputBox
+		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
 	});
-	// This method will attach AutoComplete feature to From inputBox
+	// This method will attach AutoComplete feature to From & Dest inputBoxes
 	autoCompletePlacesFrom(globalMapObj.map);
 	autoCompletePlacesDest(globalMapObj.map);
 	// This method will find place name for current latLng and set in From inputBox
-	geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, 'fromAddress');
+	geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
 }
 	
-function geocodeLatLng(map, latLngObj, elementId) {
-	// Step 2:	Call Reverse Geocode API, using current latLng, fetch city
+function geocodeLatLng(map, latLngObj, elementIdArray) {
+	// Step 2:	Call Reverse Geocode API, using current latLng, fetch Place
 	var geocoder = new google.maps.Geocoder;
 	//var infowindow = new google.maps.InfoWindow;
 	geocoder.geocode({'location': latLngObj}, function(results, status) {
@@ -82,7 +84,9 @@ function geocodeLatLng(map, latLngObj, elementId) {
 				document.getElementById(elementId).value=results[0].formatted_address;
 			}, 1500);
 			*/
-			document.getElementById(elementId).value=results[0].formatted_address;
+			elementIdArray.forEach(function(elementId){
+				document.getElementById(elementId).value=results[0].formatted_address;
+			});
 		  /*var marker = new google.maps.Marker({
 			position: latLngObj,
 			map: map
@@ -112,10 +116,14 @@ function autoCompletePlacesFrom(map){
 	});
 
 	autocompleteFrom.addListener('place_changed', function() {
+
 		// Closing original marker, as user has seleted Autocomplete marker
 		globalMapObj.initMarker.setMap(null);
 	  //infowindow.close();
 	  marker.setVisible(false);
+	  if(globalMapObj.fromMarker)
+		globalMapObj.fromMarker.setMap(null);
+
 	  var place = autocompleteFrom.getPlace();
 	  if (!place.geometry) {
 		// User entered the name of a Place that was not suggested and
@@ -148,9 +156,10 @@ function autoCompletePlacesFrom(map){
 	  google.maps.event.removeListener(globalMapObj.dragendListener);
 	  globalMapObj.dragendListener = globalMapObj.map.addListener('dragend',function() {
 		globalMapObj.latLngObj = globalMapObj.map.getCenter();
-		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, 'fromAddress');
+		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
 	  });
-	  
+	  globalMapObj.fromAddressText=$('input#fromAddress').val();
+	  /*
 	  var address = '';
 	  if (place.address_components) {
 		address = [
@@ -158,10 +167,11 @@ function autoCompletePlacesFrom(map){
 		  (place.address_components[1] && place.address_components[1].short_name || ''),
 		  (place.address_components[2] && place.address_components[2].short_name || '')
 		].join(' ');
-	  }
+	  }*/
 	  setMapBounds();
 	  //infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
 	  //infowindow.open(map, marker);
+	  hideLocSelectionPartial('fromAddressInit');
 	});
 }
 function autoCompletePlacesDest(map){
@@ -181,6 +191,8 @@ function autoCompletePlacesDest(map){
 	autocompleteDest.addListener('place_changed', function() {
 
 	  marker.setVisible(false);
+	  if(globalMapObj.destMarker)
+		globalMapObj.destMarker.setMap(null);
 	  var place = autocompleteDest.getPlace();
 	  if (!place.geometry) {
 		// User entered the name of a Place that was not suggested and
@@ -213,7 +225,7 @@ function autoCompletePlacesDest(map){
 	  google.maps.event.removeListener(globalMapObj.dragendListener);
 	  globalMapObj.dragendListener = globalMapObj.map.addListener('dragend',function() {
 		globalMapObj.latLngObj = globalMapObj.map.getCenter();
-		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, 'destAddress');
+		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['destAddressInit','destAddress']);
 	  });
 	  var address = '';
 	  if (place.address_components) {
@@ -224,6 +236,11 @@ function autoCompletePlacesDest(map){
 		].join(' ');
 	  }
 	  setMapBounds();
+	  //$('input#destAddressInit').val(address); // Google places doesn't give Places name appropriate compared to Reverse Geocode API, hence commenting this line
+	  geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['destAddress','destAddressInit']);
+	  globalMapObj.destAddressText=$('input#destAddress').val();
+	  $('input#destAddressInit').val($('input#destAddress').val());
+	  hideLocSelectionPartial('destAddressInit');
 	  
 	  var infowindow = new google.maps.InfoWindow();
 	  infowindow.setContent('Click to pin Marker');
@@ -231,10 +248,12 @@ function autoCompletePlacesDest(map){
 	  setTimeout(function(){
 		infowindow.close();
 	  }, 3000);
+	  
 	});
 }
 function pinMarker(){
 	google.maps.event.removeListener(globalMapObj.dragListener);
+	google.maps.event.removeListener(globalMapObj.dragendListener);
 }
 function unpinMarker(marker){
 	google.maps.event.removeListener(globalMapObj.dragListener);
@@ -316,6 +335,136 @@ function formatTo12hour(val){
 	if(val>12 && val<24)
 		return val-12 + "pm";
 }
-function showLocSelection() {
-	console.log(this.value);
+$(document).ready(function(){
+	$('div.delivery-type').click(function () {
+		if($('input#fromAddressInit').hasClass('controlDisabled')){
+			$('input#fromAddressInit').removeClass('controlDisabled');
+			$('input#fromAddressInit').removeAttr("disabled");
+		}
+		if($('input#destAddressInit').hasClass('controlDisabled')){
+			$('input#destAddressInit').removeClass('controlDisabled');
+			$('input#destAddressInit').removeAttr("disabled");
+		}
+	});
+	$('div.delivery-type input').change(function() {
+		if(this.checked) {
+			$('div.delivery-type input').prop('checked', false);
+			this.checked = true;	// Here Unchecked box is Checked
+			
+			// Below we are making Input boxes blank if InputBox is Enabled and Delivery Type is changed
+			$('input#fromAddressInit').val('');
+			$('input#destAddressInit').val('');
+			globalMapObj.fromAddressText=null;
+			globalMapObj.destAddressText=null;
+		}else{
+			this.checked = true;	// Once checked, user not allowed to uncheck
+		}
+	});
+});
+
+function showLocSelectionPartial(caller) {
+	if(caller=='fromAddressInit' && $('input#fromAddressInit').hasClass('controlDisabled'))
+		return;
+	if(caller=='destAddressInit' && $('input#destAddressInit').hasClass('controlDisabled'))
+		return;
+	$('div#inputDiv3_2').load('Landmark-partial.html');
+	$('div#inputDiv3').show();
+	$('div#inputDiv1').hide();
+	if(caller=='fromAddressInit'){
+		$('input#destAddress').hide();
+		$('input#fromAddress').show();
+	}
+	else if(caller=='destAddressInit'){
+		$('input#fromAddress').hide();
+		$('input#destAddress').show();
+	}
+	var poppedDiv = globalMapObj.map.controls[google.maps.ControlPosition.TOP_CENTER].pop();
+	var divTemp_inputDiv1 = document.createElement("div");
+	divTemp_inputDiv1.innerHTML = poppedDiv.innerHTML;
+	divTemp_inputDiv1.id='inputDiv1';
+	divTemp_inputDiv1.className=poppedDiv.className;
+	var placeholderDiv = document.getElementById('placeholderForMapPopDivs');
+	placeholderDiv.appendChild(divTemp_inputDiv1);
+	
+	var inputDiv3 = document.getElementById('inputDiv3');
+	globalMapObj.map.controls[google.maps.ControlPosition.TOP_CENTER].push(inputDiv3);
+
+	// Below will make From Inputbox text as Selected
+	$('input#fromAddress').focus(function() {
+		console.log('focussed now');
+		$(this).select();
+	});
+	// Below will make From Inputbox text as Selected
+	$('input#fromAddress').on('mousedown.selectOnFocus', function() {
+		if (!($(this).is(':focus'))) {
+			$(this).focus();
+			$(this).one('mouseup.selectOnFocus', function(up) {
+				up.preventDefault();
+			});
+		}
+	});
+	// Below will make Dest Inputbox text as Selected
+	$('input#destAddress').focus(function() {
+		$(this).select();
+	});
+	// Below will make Dest Inputbox text as Selected
+	$('input#destAddress').on('mousedown.selectOnFocus', function() {
+		if (!($(this).is(':focus'))) {
+			$(this).focus();
+			$(this).one('mouseup.selectOnFocus', function(up) {
+				up.preventDefault();
+			});
+		}
+	});
+	// This method will attach AutoComplete feature to From & Dest inputBoxes
+	if(caller=='fromAddressInit'){
+		autoCompletePlacesFrom(globalMapObj.map);
+		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
+		focusBox(caller);
+	}
+	else if(caller=='destAddressInit'){
+		autoCompletePlacesDest(globalMapObj.map);
+		focusBox(caller);
+	}
 }
+// Below function to give functionality to Clear (X) mark in Input box
+function tog(v){return v?'addClass':'removeClass';} 
+$(document).on('input', '.clearableInput', function(){
+	$(this)[tog(this.value)]('x');
+}).on('mousemove', '.x', function( e ){
+	$(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX');
+}).on('touchstart click', '.onX', function( ev ){
+	ev.preventDefault();
+	$(this).removeClass('x onX').val('').change();
+});
+function focusBox(caller) {
+	setTimeout(function () {
+		if(caller=='fromAddressInit'){
+			$('input#fromAddress').focus();
+			$('.clearableInput').trigger("input");	// This will put Clear (X) mark in Input box having existing values
+		}
+		else if(caller=='destAddressInit'){
+			$('input#destAddress').focus();
+			$('.clearableInput').trigger("input");	// This will put Clear (X) mark in Input box having existing values
+		}
+	}, 200);
+}
+function hideLocSelectionPartial(caller) {
+	$('div#inputDiv3').hide();
+	$('div#inputDiv1').show();
+	//if(caller=='fromAddressInit')
+	$('input#fromAddressInit').val(globalMapObj.fromAddressText);
+	$('input#destAddressInit').val(globalMapObj.destAddressText);
+	
+	var poppedDiv = globalMapObj.map.controls[google.maps.ControlPosition.TOP_CENTER].pop();
+	var divTemp_inputDiv3 = document.createElement("div");
+	divTemp_inputDiv3.innerHTML = poppedDiv.innerHTML;
+	divTemp_inputDiv3.id='inputDiv3';
+	divTemp_inputDiv3.className=poppedDiv.className;
+	var placeholderDiv = document.getElementById('placeholderForMapPopDivs');
+	placeholderDiv.appendChild(divTemp_inputDiv3);
+
+	var inputDiv1 = document.getElementById('inputDiv1');
+	globalMapObj.map.controls[google.maps.ControlPosition.TOP_CENTER].push(inputDiv1);
+}
+

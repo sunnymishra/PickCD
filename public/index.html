@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Step3</title>
+    <title>PickCD</title>
 	
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" href="./css/map-ui.css">	<!--This css should be loaded after jquery-ui.css -->
@@ -19,66 +19,60 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script src="./js/jquery.nice-select.min.js"></script>
 	<div class="mainContainer">
-	<div id="map_canvas"></div>
-		
-	<div id="inputDiv1">
-		<input id="fromAddressInit" type="text" class="controls" placeholder="Enter From address" onclick="showLocSelection(this);"><BR>
-		<input id="destAddressInit" type="text" class="controls" placeholder="Enter Destination address" onclick="showLocSelection(this);">
-    </div>
-	<div id="inputDiv2" style="margin-bottom:20px;">
-		<table>
-			<tr>
-				<td valign="top">
-					<select id="dateselector" style="">
-						<option value="today">Today</option>
-						<option value="tomorrow">Tomorrow</option>
-					</select>
-				</td>
-				<td valign="top" style="padding-left:10px;">
-				<div class="controls" style="width:150px;height:20px;margin-top:2px;margin-left: 1px;font-size: 14px;">
-					<label>Time: </label><strong><span id="timeRange"></span></strong>
-				</div>
-				<div id="time-slider" style="width: 250px; height:15px; margin-top:5px;"></div>
-				</td>
-			</tr>
-			<tr style="padding-top:20px;">
-				<td style="padding-left:50px;">
-					<div class="btn-circle">
-						<input id="c1" type="checkbox">
-						<label for="c1">Doorstep</label>
-					</div>
-				</td>
-				<td style="padding-left:30px;">
-					<div class="btn-circle">
-						<input id="c2" type="checkbox">
-						<label for="c2">Landmark</label>
-					</div>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<div id="inputDiv3" style="display:none;" class="overlay1">
-		<div id="inputDiv3_1" align="center" >
-			<input id="fromAddress" type="text" class="controls" placeholder="Enter From address"><BR>
-			<input id="destAddress" type="text" class="controls" placeholder="Enter Destination address">
+		<div id="placeholderForMapPopDivs" style="display:none;"></div>
+		<div id="map_canvas"></div>
+			
+		<div id="inputDiv1">
+			<input id="fromAddressInit" type="text" class="controls controlDisabled" placeholder="Enter From address" onClick="showLocSelectionPartial('fromAddressInit');" disabled><BR>
+			<input id="destAddressInit" type="text" class="controls controlDisabled" placeholder="Enter Destination address" onClick="showLocSelectionPartial('destAddressInit');" disabled>
 		</div>
-		<div id="inputDiv3_2" align="center">
+		<div id="inputDiv2" style="margin-bottom:20px;">
+			<table>
+				<tr>
+					<td valign="top">
+						<select id="dateselector" style="">
+							<option value="today">Today</option>
+							<option value="tomorrow">Tomorrow</option>
+						</select>
+					</td>
+					<td valign="top" style="padding-left:10px;">
+					<div class="controls" style="width:150px;height:20px;margin-top:2px;margin-left: 1px;font-size: 14px;">
+						<label>Time: </label><strong><span id="timeRange"></span></strong>
+					</div>
+					<div id="time-slider" style="width: 250px; height:15px; margin-top:5px;"></div>
+					</td>
+				</tr>
+				<tr style="padding-top:20px;">
+					<td style="padding-left:50px;">
+						<div class="delivery-type btn-circle">
+							<input id="delivery-type-check1" type="checkbox">
+							<label for="delivery-type-check1">Doorstep</label>
+						</div>
+					</td>
+					<td style="padding-left:30px;">
+						<div class="delivery-type btn-circle">
+							<input id="delivery-type-check2" type="checkbox">
+							<label for="delivery-type-check2">Landmark</label>
+						</div>
+					</td>
+				</tr>
+			</table>
 		</div>
-	</div>
+		<div id="inputDiv3" style="display:none;" class="overlay1">
+			<div id="inputDiv3_1" align="center" >
+				<input id="fromAddress" type="text" class="controls clearableInput" placeholder="Enter From address"><BR>
+				<input id="destAddress" type="text" class="controls clearableInput" placeholder="Enter Destination address">
+			</div>
+			<div id="inputDiv3_2" align="center">
+			</div>
+		</div>
 	</div>
 	<script type="text/javascript">
-		$(document).ready(function(){
-			$('input#fromAddressInit').click(function () {
-				console.log('inside click');
-				$('div#inputDiv3_2').load('Landmark-partial.html');
-				$('div#inputDiv3').show();
-				$('div#inputDiv1').hide();
-				var inputDiv3 = document.getElementById('inputDiv3');
-				globalMapObj.map.controls[google.maps.ControlPosition.TOP_CENTER].push(inputDiv3);
-			}); 
-		});
+		
 	</script>
-
+	<style>
+		
+	</style>
     <script src="./js/map-ui.js"></script>
 
     <script async defer

@@ -40,15 +40,18 @@ html, body {
 	height: 32px;
 	outline: none;
 	box-shadow: 0 2px 9px rgba(0, 0, 0, 0.4);
-	
 	background-color: #fff;
 	font-family: Roboto;
 	font-size: 15px;
 	font-weight: 300;
 	margin-left: 12px;
-	padding: 0 11px 0 13px;
+	padding: 0 11px 0 10px;
 	text-overflow: ellipsis;
 	width: 500px;
+}
+.controlDisabled {
+	background-color: #e4e4e4;
+	cursor: not-allowed;
 }
 #fromAddress{
 	border-color: #ff7f7f;
@@ -70,18 +73,24 @@ html, body {
 	top: -1px;
 }
 /* Following css for Screen 2 Overlapping cascade Fav places and Prev places list */
-.label-font {
-	padding: 12px;
-	color: #9199a1;
-	font-size: 14px;
-}
+
 div.location-stack{
 	margin-top: 5px;
+}
+.location-stack label{
+	color: #e5e5e5;
+	font-size: 14px;
+	padding: 0 11px 0 13px;
+	width: 120px;
+	text-align: left;
+	margin-left: 80px;
+	margin-bottom: 5px;
+	clear: both; float: left; display: block; position: relative; 
 }
 .location-stack ul{
 	list-style-type: none;
 	margin: 0px;
-	padding: 8px
+	padding: 8px;
 }
 .location-stack li{
 	position: relative;
@@ -105,6 +114,11 @@ div.location-stack{
 	line-height: 24px;
 	text-overflow: ellipsis;
 	width: 450px;
+	
+	-o-text-overflow: ellipsis;   /* Opera show ellipsis if text exceeds box length*/
+    text-overflow:    ellipsis;   /* IE, Safari (WebKit) show ellipsis if text exceeds box length*/
+    overflow:hidden;              /* don't show excess chars */
+    white-space:nowrap;
 }
 .location-stack li:hover{
 	background: #f0f0f0;
@@ -132,7 +146,19 @@ div.location-stack{
 	-webkit-transition: opacity 0.5s ease;
 	-moz-transition: opacity 0.5s ease;
 	background:rgba(0,0,0,.75);
-	opacity: 1;
+	opacity: .9;
 }
 
-
+.clearableInput{
+	background: #fff url(http://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
+	border: 1px solid #999;
+	padding: 0 18px 0 10px;     
+	/* http://localhost:8080/pickcd-tomcat/img/close.png 
+	background-size: 30px;
+	Use the same right padding (18) in jQ! */
+	border-radius: 3px;
+	transition: background 0.4s;
+}
+.clearableInput.x  { background-position: right 5px center; } /* (jQ) Show icon */
+.clearableInput.onX{ cursor: pointer; }              /* (jQ) hover cursor style */
+.clearableInput::-ms-clear {display: none; width:0; height:0;} /* Remove IE default X */
