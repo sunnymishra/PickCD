@@ -33,7 +33,7 @@ html, body {
 }
 .controls {
 	margin-top: 10px;
-	border: 2px solid transparent;
+	border: 1px solid transparent;
 	border-radius: 2px 0 0 2px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -53,18 +53,13 @@ html, body {
 	background-color: #e4e4e4;
 	cursor: not-allowed;
 }
-#fromAddress{
+#fromAddress, #fromAddressInit{
 	border-color: #ff7f7f;
 }
-#fromAddress:focus{
-	border-color: #ff6f6f;
-}
-#destAddress{
+#destAddress, #destAddressInit{
 	border-color: #82b1fe;
 }
-#destAddress:focus {
-	border-color: #5e9bfe;
-}
+
 /* Following 2 css are jquery-ui default classes. Overriding for time-slider div.*/
 .ui-widget-header {
 	background: #89e589;

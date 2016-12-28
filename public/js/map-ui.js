@@ -12,11 +12,11 @@ function showInitMap(position) {
 	var initLat=position.coords.latitude;
 	var initLong=position.coords.longitude;
 	console.log('Initial lat:'+initLat+' lng:'+initLong);
-	globalMapObj.latLngObj = {lat: initLat, lng: initLong};
+	globalMapObj.fromLatLngObj = {lat: initLat, lng: initLong};
 
 	globalMapObj.map = new google.maps.Map(document.getElementById('map_canvas'), {
 	  zoom: 15,
-	  center: globalMapObj.latLngObj,
+	  center: globalMapObj.fromLatLngObj,
 	  disableDefaultUI: true,
 	  clickableIcons: false
 	});
@@ -41,22 +41,22 @@ function showInitMap(position) {
 	globalMapObj.initMarker=initMarker;
 	// Set map's center to be global latLng, even if User zooms the Map
 	globalMapObj.map.addListener('zoom_changed',function() {
-		globalMapObj.map.setCenter(globalMapObj.latLngObj);
+		globalMapObj.map.setCenter(globalMapObj.fromLatLngObj);
 	});
 	globalMapObj.dragListener = globalMapObj.map.addListener('drag',function() {
 		initMarker.setPosition(globalMapObj.map.getCenter());
 	});
 	// Update global latLng, when user changes map's center by dragging the map
 	globalMapObj.dragendListener = globalMapObj.map.addListener('dragend',function() {
-		globalMapObj.latLngObj = globalMapObj.map.getCenter();
+		globalMapObj.fromLatLngObj = globalMapObj.map.getCenter();
 		// This method will find place name for current latLng and set in From inputBox
-		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
+		geocodeLatLng(globalMapObj.map, globalMapObj.fromLatLngObj, ['fromAddressInit','fromAddress']);
 	});
 	// This method will attach AutoComplete feature to From & Dest inputBoxes
 	autoCompletePlacesFrom(globalMapObj.map);
 	autoCompletePlacesDest(globalMapObj.map);
 	// This method will find place name for current latLng and set in From inputBox
-	geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
+	//geocodeLatLng(globalMapObj.map, globalMapObj.fromLatLngObj, ['fromAddressInit','fromAddress']);
 }
 	
 function geocodeLatLng(map, latLngObj, elementIdArray) {
@@ -88,7 +88,7 @@ function geocodeLatLng(map, latLngObj, elementIdArray) {
 				document.getElementById(elementId).value=results[0].formatted_address;
 			});
 		  /*var marker = new google.maps.Marker({
-			position: latLngObj,
+			position: fromLatLngObj,
 			map: map
 		  });*/
 		  //infowindow.setContent(results[1].formatted_address);
@@ -151,12 +151,12 @@ function autoCompletePlacesFrom(map){
 	  });
 	  unpinMarker(marker);
 	  
-	  globalMapObj.latLngObj = place.geometry.location;
+	  globalMapObj.fromLatLngObj = place.geometry.location;
 	  globalMapObj.fromMarker=marker;
 	  google.maps.event.removeListener(globalMapObj.dragendListener);
 	  globalMapObj.dragendListener = globalMapObj.map.addListener('dragend',function() {
-		globalMapObj.latLngObj = globalMapObj.map.getCenter();
-		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
+		globalMapObj.fromLatLngObj = globalMapObj.map.getCenter();
+		geocodeLatLng(globalMapObj.map, globalMapObj.fromLatLngObj, ['fromAddressInit','fromAddress']);
 	  });
 	  globalMapObj.fromAddressText=$('input#fromAddress').val();
 	  /*
@@ -219,13 +219,13 @@ function autoCompletePlacesDest(map){
 	  });
 	  unpinMarker(marker);
 	  
-	  globalMapObj.latLngObj = place.geometry.location;
+	  globalMapObj.destLatLngObj = place.geometry.location;
 	  globalMapObj.destMarker=marker;
 
 	  google.maps.event.removeListener(globalMapObj.dragendListener);
 	  globalMapObj.dragendListener = globalMapObj.map.addListener('dragend',function() {
-		globalMapObj.latLngObj = globalMapObj.map.getCenter();
-		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['destAddressInit','destAddress']);
+		globalMapObj.destLatLngObj = globalMapObj.map.getCenter();
+		geocodeLatLng(globalMapObj.map, globalMapObj.destLatLngObj, ['destAddressInit','destAddress']);
 	  });
 	  var address = '';
 	  if (place.address_components) {
@@ -236,8 +236,9 @@ function autoCompletePlacesDest(map){
 		].join(' ');
 	  }
 	  setMapBounds();
+	  globalMapObj.map.setCenter(place.geometry.location);
 	  //$('input#destAddressInit').val(address); // Google places doesn't give Places name appropriate compared to Reverse Geocode API, hence commenting this line
-	  geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['destAddress','destAddressInit']);
+	  geocodeLatLng(globalMapObj.map, globalMapObj.destLatLngObj, ['destAddress','destAddressInit']);
 	  globalMapObj.destAddressText=$('input#destAddress').val();
 	  $('input#destAddressInit').val($('input#destAddress').val());
 	  hideLocSelectionPartial('destAddressInit');
@@ -324,6 +325,7 @@ $(function() {
 	 " - " + formatTo12hour($( "#time-slider" ).slider( "values", 1 )) );
 });
 function formatTo12hour(val){
+	// This function converts 24 hour format to 12 hour format with am-pm
 	if(val<1 || val>24)
 		return null;
 	if(val<12 && val>0)
@@ -419,7 +421,7 @@ function showLocSelectionPartial(caller) {
 	// This method will attach AutoComplete feature to From & Dest inputBoxes
 	if(caller=='fromAddressInit'){
 		autoCompletePlacesFrom(globalMapObj.map);
-		geocodeLatLng(globalMapObj.map, globalMapObj.latLngObj, ['fromAddressInit','fromAddress']);
+		geocodeLatLng(globalMapObj.map, globalMapObj.fromLatLngObj, ['fromAddressInit','fromAddress']);
 		focusBox(caller);
 	}
 	else if(caller=='destAddressInit'){
