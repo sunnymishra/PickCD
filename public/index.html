@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
     <title>PickCD</title>
 	
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" href="./css/map-ui.css">	<!--This css should be loaded after jquery-ui.css -->
-	<link rel="stylesheet" href="./css/nice-select.css">
-	<link rel="stylesheet" href="./css/circular-button.css">
+	<link rel="stylesheet" type="text/css" href="./css/map-ui.css">	<!--This css should be loaded after jquery-ui.css -->
+	<link rel="stylesheet" type="text/css" href="./css/nice-select.css">
+	<link rel="stylesheet" type="text/css" href="./css/circular-button.css">
+	<link rel="stylesheet" type="text/css" href="./css/on-off-switch.css"/>
+	
 	<style>
 	</style>
   </head>
@@ -18,6 +22,9 @@
 	</script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script src="./js/jquery.nice-select.min.js"></script>
+	<script type="text/javascript" src="./js/on-off-switch.js"></script>
+    <script type="text/javascript" src="./js/on-off-switch-onload.js"></script>
+	
 	<div class="mainContainer">
 		<div id="placeholderForMapPopDivs" style="display:none;"></div>
 		<div id="map_canvas"></div>
@@ -43,17 +50,41 @@
 					</td>
 				</tr>
 				<tr style="padding-top:20px;">
-					<td style="padding-left:50px;">
-						<div class="delivery-type btn-circle">
-							<input id="delivery-type-check1" type="checkbox">
-							<label for="delivery-type-check1">Doorstep</label>
-						</div>
-					</td>
-					<td style="padding-left:30px;">
-						<div class="delivery-type btn-circle">
-							<input id="delivery-type-check2" type="checkbox">
-							<label for="delivery-type-check2">Landmark</label>
-						</div>
+					<td colspan="2">
+					<div class="pickup-type-container">
+						<table>
+							<tr>
+								<td style="padding-left:50px;">
+									<div class="delivery-type btn-circle">
+										<input id="delivery-type-check1" type="checkbox">
+										<label for="delivery-type-check1">Doorstep</label>
+									</div>
+								</td>
+								<td style="padding-left:30px;">
+									<div class="delivery-type btn-circle">
+										<input id="delivery-type-check2" type="checkbox">
+										<label for="delivery-type-check2">Landmark</label>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="on-off-switch-container" style="display:none;">
+						<input type="checkbox" name="on-off-switch-1" class="on-off-switch">
+						<script type="text/javascript">
+							/* General rules for all the switches in demo 5 */
+							new DG.OnOffSwitchAuto({
+								cls:'.on-off-switch',
+								textOn:"Booked",
+								height:50,
+								textOff:"Confirm Doorstep",
+								textSizeRatio:0.35,
+								listener:function(name, checked){
+									document.getElementById("switch-listener-div").innerHTML = name + "=" + checked;
+								}
+							});
+						</script>
+					</div>
 					</td>
 				</tr>
 			</table>
@@ -66,14 +97,19 @@
 			<div id="inputDiv3_2" align="center">
 			</div>
 		</div>
+		
+		
+		
+
 	</div>
+	<div id="switch-listener-div" style="font-size:0.8em">False</div>
 	<script type="text/javascript">
 		
 	</script>
 	<style>
 		
 	</style>
-    <script src="./js/map-ui.js"></script>
+    <script type="text/javascript" src="./js/map-ui.js"></script>
 
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoTkEO9SJ2ShBX7mYmV4euIdGFARzvO0M&libraries=places&callback=initMap">

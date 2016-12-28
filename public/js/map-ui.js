@@ -468,5 +468,10 @@ function hideLocSelectionPartial(caller) {
 
 	var inputDiv1 = document.getElementById('inputDiv1');
 	globalMapObj.map.controls[google.maps.ControlPosition.TOP_CENTER].push(inputDiv1);
+	
+	if(caller=='destAddressInit' && $('input#fromAddressInit').val().length > 0 ){
+		$('div.pickup-type-container').hide();
+		$('div.on-off-switch-container').show();
+	}
 }
 
