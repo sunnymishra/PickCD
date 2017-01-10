@@ -53,6 +53,10 @@ html, body {
 	background-color: #e4e4e4;
 	cursor: not-allowed;
 }
+.controlBlurred {
+	background-color: #f6f6f6; /*#f1f1f1;*/
+	cursor: not-allowed;
+}
 #fromAddress, #fromAddressInit{
 	border-color: #ff7f7f;
 }

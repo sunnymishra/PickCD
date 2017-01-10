@@ -291,6 +291,10 @@ $.extend(DG.OnOffSwitch.prototype, {
     },
 
     drag: function (e) {
+		if(DG.checkOverride){
+			// This is added by Sunny to stop on-off functionality if clicked on Booked once
+			return;
+		}
         if (!this.isDragging) {
             return true;
         }
@@ -367,6 +371,11 @@ $.extend(DG.OnOffSwitch.prototype, {
     },
 
     toggle: function () {
+		console.log('inside on-off-switch toggle()');
+		if(DG.checkOverride){
+			// This is added by Sunny to stop on-off functionality if clicked on Booked
+			return;
+		}
         if (!this.checked) {
             this.checked = true;
             this.animateRight();

@@ -26,7 +26,7 @@ DG.OnOffSwitchAuto = function (config) {
                     }
                 }
 
-                new DG.OnOffSwitch(
+                DG.OnOffSwitchObj = new DG.OnOffSwitch(
                     elementConfig
                 );
             }

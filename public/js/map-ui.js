@@ -281,20 +281,6 @@ function setMapBounds(){
 		});
 	*/
 }
-/*function smoothZoom (map, max, cnt) {
-	if (cnt > max) {
-		return;
-	}
-	else {
-		z = google.maps.event.addListener(map, 'zoom_changed', function(event){
-			google.maps.event.removeListener(z);
-			smoothZoom(map, max, cnt + 1);
-		});
-		setTimeout(function(){
-			map.setZoom(cnt)
-		}, 40); // 40ms might not work well on all systems
-	}
-}*/
 
 var $ = jQuery;
 $(document).ready(function() {
@@ -337,6 +323,7 @@ function formatTo12hour(val){
 	if(val>12 && val<24)
 		return val-12 + "pm";
 }
+// Below function decides action on click of Delivery type buttons
 $(document).ready(function(){
 	$('div.delivery-type').click(function () {
 		if($('input#fromAddressInit').hasClass('controlDisabled')){
@@ -363,7 +350,7 @@ $(document).ready(function(){
 		}
 	});
 });
-
+// Below function to display 2nd Screen overlayed on top of blurred Map  
 function showLocSelectionPartial(caller) {
 	if(caller=='fromAddressInit' && $('input#fromAddressInit').hasClass('controlDisabled'))
 		return;
@@ -474,4 +461,5 @@ function hideLocSelectionPartial(caller) {
 		$('div.on-off-switch-container').show();
 	}
 }
+
 
