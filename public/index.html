@@ -24,7 +24,8 @@
 	<script src="./js/jquery.nice-select.min.js"></script>
 	<script type="text/javascript" src="./js/on-off-switch.js"></script>
     <script type="text/javascript" src="./js/on-off-switch-onload.js"></script>
-	
+	<script type="text/javascript" src="./js/map-load.js"></script>
+		
 	<div class="mainContainer">
 		<div id="placeholderForMapPopDivs" style="display:none;"></div>
 		<div id="map_canvas"></div>
@@ -51,7 +52,7 @@
 				</tr>
 				<tr style="padding-top:20px;">
 					<td colspan="2">
-					<div class="pickup-type-container">
+					<div class="pickup-type-container" style="display:block;">
 						<table>
 							<tr>
 								<td style="padding-left:50px;">
@@ -70,20 +71,27 @@
 						</table>
 					</div>
 					<div class="on-off-switch-container" style="display:none;">
-						<input type="checkbox" name="on-off-switch-1" class="on-off-switch">
-						<script type="text/javascript">
-							/* General rules for all the switches in demo 5 */
-							new DG.OnOffSwitchAuto({
-								cls:'.on-off-switch',
-								textOn:"Booked",
-								height:50,
-								textOff:"Confirm Doorstep",
-								textSizeRatio:0.35,
-								listener:function(name, checked){
-									document.getElementById("switch-listener-div").innerHTML = name + "=" + checked;
-								}
-							});
-						</script>
+						<table>
+							<tr>
+								<td style="padding-left:50px;">
+									<input type="checkbox" name="on-off-switch-btn" class="on-off-switch">
+									<script type="text/javascript">
+										/* General config for the switch button */
+										new DG.OnOffSwitchAuto({
+											cls:'.on-off-switch',
+											textOn:"Booked",
+											height:50,
+											textOff:"Confirm Doorstep",
+											textSizeRatio:0.35,
+											listener:onOffListenerCallback
+										});
+									</script>
+								</td>
+								<td style="padding-left:30px;">
+									<p type="button" class="btn" id="bookCancelBtn">Cancel</p>
+								</td>
+							</tr>
+						</table>						
 					</div>
 					</td>
 				</tr>
@@ -102,7 +110,7 @@
 		
 
 	</div>
-	<div id="switch-listener-div" style="font-size:0.8em">False</div>
+
 	<script type="text/javascript">
 		
 	</script>
