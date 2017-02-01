@@ -14,25 +14,29 @@ module.exports = function() {
 			passwordField: 'password'
 		},
 		function(userName, password, done) {
-			User.findOne({
-				"profile.userName": userName
-			}, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				if (!user) {
-					return done(null, false, {
-						message: 'Unknown user'
-					});
-				}
-				if (!user.authenticate(password)) {
-					return done(null, false, {
-						message: 'Invalid password'
-					});
-				}
+			User.findOne(
+				{"profile.userName": userName}, 
+				'+profile.password +profile.salt', 
+				function(err, user) {
+					if (err) {
+						return done(err);
+					}
+					if (!user) {
+						return done(null, false, {
+							message: 'Unknown user'
+						});
+					}
+					if (!user.authenticate(password)) {
+						return done(null, false, {
+							message: 'Invalid password'
+						});
+					}
+					user.profile.password=undefined;
+					user.profile.salt=undefined;
 
-				return done(null, user);
-			});
+					return done(null, user);
+				}
+			);
 		}
 	));
 };

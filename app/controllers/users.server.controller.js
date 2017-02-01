@@ -69,11 +69,12 @@ exports.signup = function(req, res) {
 exports.signin = function(req, res, next) {
 	passport.authenticate('local', function(err, user, info) {
 		if (err || !user) {
+			console.log('passport authentication failed');
 			res.status(400).send(info);
 		} else {
 			// Remove sensitive data before login
-			user.profile.password = undefined;
-			user.profile.salt = undefined;
+			//user.profile.password = undefined;
+			//user.profile.salt = undefined;
 
 			req.login(user, function(err) {
 				if (err) {
@@ -95,35 +96,42 @@ exports.update = function(req, res) {
 	var message = null;
 
 	// For security measurement we remove the roles from the req.body object
+	// Else hackers can add themselves as ADMIN role user
 	delete req.body.roles;
 	if (user) {
 		// Merge existing user
 		var newUser = req.body;
 		if(newUser.profile){
-			newUser.profile.userName=user.profile.userName;	// Ensuring userName is not changed in this API
-			newUser.profile.password=user.profile.password; // Ensuring password is not changed in this API
-			newUser.profile.salt=user.profile.salt; // Ensuring salt is not changed in this API
-			newUser.profile.contacts.isEmailVerified=user.profile.contacts.isEmailVerified; // Ensuring isEmailVerified is not changed in this API
-			newUser.profile.contacts.isMobileVerified=user.profile.contacts.isMobileVerified; // Ensuring isMobileVerified is not changed in this API
-
-			user.profile = _.extend(user.profile, newUser.profile);
-			//This function is also updating password in model class. Stop that.
+			//newUser.profile.userName=user.profile.userName;	// Ensuring userName is not changed in this API
+			//newUser.profile.password=user.profile.password; // Ensuring password is not changed in this API
+			//newUser.profile.salt=user.profile.salt; // Ensuring salt is not changed in this API
+			delete newUser.profile.userName;
+			delete newUser.profile.password;
+			delete newUser.profile.salt;
+			if(newUser.profile.contacts){
+				delete newUser.profile.contacts.isEmailVerified; // Ensuring isEmailVerified is not changed in this API
+				delete newUser.profile.contacts.isMobileVerified; // Ensuring isMobileVerified is not changed in this API
+			}
+			// Lodash merge() will merges Src and Dest Object inside Parent Object
+			user.profile = _.merge(user.profile, newUser.profile);
 		} else if(newUser.customer){
+			// Lodash extend() will not merge child Src Object and child Dest Object inside Parent Object
 			user.customer = _.extend(user.customer, newUser.customer);
 		} else if(newUser.carrier){
+			// Lodash extend() will not merge child Src Object and child Dest Object inside Parent Object
 			user.carrier = _.extend(user.carrier, newUser.carrier);
 		}
 
 		user.updated = Date.now();
-
+		// TODO: We should use user.update() here to save heavy save operation and avoid running into concurrency issues
 		user.save(function(err) {
 			if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
 				});
 			} else {
-				user.profile.password = undefined;
-				user.profile.salt = undefined;
+				//user.profile.password = undefined;
+				//user.profile.salt = undefined;
 				req.login(user, function(err) {
 					if (err) {
 						res.status(400).send(err);
@@ -149,13 +157,14 @@ exports.changePassword = function(req, res, next) {
 	var message = null;
 
 	if (req.user) {
-		User.findById(req.user.id, function(err, user) {
+		User.findById(req.user.id, '+profile.password +profile.salt', function(err, user) {
 			if (!err && user) {
 				console.log('passwordDetails.currentPassword='+passwordDetails.currentPassword);
 				if (user.authenticate(passwordDetails.currentPassword)) {
 					if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
 						user.profile.password = passwordDetails.newPassword;
 						user.hashSaltPassword();
+						// TODO: We should use user.update() here to save heavy save operation and avoid running into concurrency issues
 						user.save(function(err) {
 							if (err) {
 								return res.status(400).send({
@@ -163,6 +172,8 @@ exports.changePassword = function(req, res, next) {
 								});
 							} else {
 								req.login(user, function(err) {
+									// TODO: Check if we need to remove salt and password from Password set User object
+									// Make a call to /users/me to find out if 2 values are exposed?
 									if (err) {
 										res.status(400).send(err);
 									} else {
@@ -208,8 +219,10 @@ exports.signout = function(req, res) {
  * Send User
  */
 exports.me = function(req, res) {
-	req.user.profile.password = undefined;
-	req.user.profile.salt = undefined;
+	if(req.user){
+		//req.user.profile.password = undefined;
+		//req.user.profile.salt = undefined;
+	}
 	res.jsonp(req.user || null);
 };
 

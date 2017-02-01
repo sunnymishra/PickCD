@@ -24,11 +24,12 @@ mongoose.connection.on('open', function() {
   console.log('Mongoose DB connected.');
   log.debug('Mongoose DB connected.');
 
-  // Initializing Express application only after Mongoose connected to DB, else Passport Session for MongoDB connection will fail in express.js file
+  // Initializing Express application only after Mongoose connected to DB, 
+  // else Passport Session for MongoDB connection will fail in express.js file
   var app = require('./config/express')(db);
 
   // Bootstrap passport config
-  console.log('About to read passport config file:');
+  //console.log('About to read passport config file:');
   require('./config/passport')(passport);
   
   function onListening() {

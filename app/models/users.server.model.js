@@ -48,11 +48,13 @@ var UserSchema = new Schema({
 		},
 		password: {
 			type: String,
+			select: false,
 			default: '',
 			validate: [validateLocalStrategyPassword, 'Password should be longer']
 		},
 		salt: {
-			type: String
+			type: String,
+			select: false
 		},
 		provider: {
 			type: String,
@@ -202,7 +204,7 @@ var UserSchema = new Schema({
  */
 /*UserSchema.pre('save', function(next) {
 	console.log('Inside save hook. this.profile.password='+this.profile.password);
-	// DO your stuff here
+	// Do your stuff here
 	next();
 });*/
 
@@ -231,6 +233,9 @@ UserSchema.methods.hashPassword = function(password) {
  * Create instance method for authenticating user
  */
 UserSchema.methods.authenticate = function(password) {
+	console.log('this.profile.password = '+ this.profile.password);
+	console.log('password = '+ password);
+	console.log('this.profile.password === this.hashPassword(password) =>'+ (this.profile.password === this.hashPassword(password));
 	return this.profile.password === this.hashPassword(password);
 };
 
