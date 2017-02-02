@@ -159,7 +159,6 @@ exports.changePassword = function(req, res, next) {
 	if (req.user) {
 		User.findById(req.user.id, '+profile.password +profile.salt', function(err, user) {
 			if (!err && user) {
-				console.log('passwordDetails.currentPassword='+passwordDetails.currentPassword);
 				if (user.authenticate(passwordDetails.currentPassword)) {
 					if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
 						user.profile.password = passwordDetails.newPassword;

@@ -233,9 +233,6 @@ UserSchema.methods.hashPassword = function(password) {
  * Create instance method for authenticating user
  */
 UserSchema.methods.authenticate = function(password) {
-	console.log('this.profile.password = '+ this.profile.password);
-	console.log('password = '+ password);
-	console.log('this.profile.password === this.hashPassword(password) =>'+ (this.profile.password === this.hashPassword(password));
 	return this.profile.password === this.hashPassword(password);
 };
 
