@@ -102,15 +102,29 @@ exports.update = function(req, res) {
 		// Merge existing user
 		var newUser = req.body;
 		if(newUser.profile){
-			//newUser.profile.userName=user.profile.userName;	// Ensuring userName is not changed in this API
-			//newUser.profile.password=user.profile.password; // Ensuring password is not changed in this API
-			//newUser.profile.salt=user.profile.salt; // Ensuring salt is not changed in this API
 			delete newUser.profile.userName;
 			delete newUser.profile.password;
 			delete newUser.profile.salt;
 			if(newUser.profile.contacts){
-				delete newUser.profile.contacts.isEmailVerified; // Ensuring isEmailVerified is not changed in this API
-				delete newUser.profile.contacts.isMobileVerified; // Ensuring isMobileVerified is not changed in this API
+				// Ensuring isMobileVerified is not changed in this API
+				var mobileObj = newUser.profile.contacts.mobile;
+				if(mobileObj && mobileObj.mCountryCode && mobileObj.mNumber){
+					if(mobileObj.mCountryCode===user.profile.contacts.mobile.mCountryCode
+						&& mobileObj.mNumber===user.profile.contacts.mobile.mNumber){
+						delete newUser.profile.contacts.mobile;
+						delete newUser.profile.contacts.isMobileVerified;
+					}else{
+						newUser.profile.contacts.isMobileVerified=false;
+					}
+				}else{
+					delete newUser.profile.contacts.isMobileVerified; 
+				}
+				// Ensuring isEmailVerified is not changed in this API
+				if(newUser.profile.contacts.email && newUser.profile.contacts.email!==user.profile.contacts.email){
+					newUser.profile.contacts.isEmailVerified=false;
+				}else{
+					delete newUser.profile.contacts.isEmailVerified; 
+				}
 			}
 			// Lodash merge() will merges Src and Dest Object inside Parent Object
 			user.profile = _.merge(user.profile, newUser.profile);

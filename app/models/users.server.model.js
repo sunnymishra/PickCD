@@ -99,7 +99,7 @@ var UserSchema = new Schema({
 					/*Use virtual to concatenate CountryCode-MobileNumber*/
 				},
 				mNumber: {
-					type: Number,
+					type: String,
 					trim: true,
 					default: '',
 					validate: [validateLocalStrategyProperty, 'Empty mobile no.'],
@@ -257,7 +257,7 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
 		}
 	});
 };
-UserSchema.virtual('profile.contacts.mobile.fullMobileNo')
+/*UserSchema.virtual('profile.contacts.mobile.fullMobileNo')
 	.get(function() {
 		return this.profile.contacts.mobile.mCountryCode + '-' + this.profile.contacts.mobile.mNumber;
 	})
@@ -267,7 +267,7 @@ UserSchema.virtual('profile.contacts.mobile.fullMobileNo')
 		if(!mobileParts[1])
 			throw new Error('Invalid mobile number format');
 		this.profile.contacts.mobile.mNumber = mobileParts[1];
-});
+});*/
 
 
 mongoose.model('User', UserSchema);
