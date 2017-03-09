@@ -165,7 +165,7 @@ exports.update = function(req, res) {
 /**
  * Change Password
  */
-exports.changePassword = function(req, res, next) {
+exports.changePassword = function(req, res) {
 	// Init Variables
 	var passwordDetails = req.body;
 	var message = null;
@@ -235,8 +235,13 @@ exports.me = function(req, res) {
 	if(req.user){
 		//req.user.profile.password = undefined;
 		//req.user.profile.salt = undefined;
+		res.jsonp(req.user || null);
+	} else {
+		res.status(400).send({
+			message: 'User is not signed in'
+		});
 	}
-	res.jsonp(req.user || null);
+	//res.jsonp(req.user || null);
 };
 
 /**
