@@ -10,7 +10,8 @@ module.exports = function(app) {
 	var users = require('../controllers/users');
 	app.route('/users/me').get(users.me);
 	app.route('/users').put(users.update);
-	app.route('/users/password').post(users.changePassword);
+	app.route('/users/password').put(users.changePassword);
+	app.route('/users/emailToken').put(users.verifyEmailToken);
 	app.route('/users/accounts').delete(users.removeOAuthProvider);
 
 	// Setting up the users api

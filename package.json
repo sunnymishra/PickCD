@@ -35,7 +35,8 @@
     "nodemailer": "^2.6.4",
     "winston": "^2.3.0",
     "nconf": "^0.8.4",
-    "dateformat":"^1.0.12"
+    "dateformat":"^1.0.12",
+    "jsonpath-object-transform":"^1.0.4"
   },
   "devDependencies": {
 

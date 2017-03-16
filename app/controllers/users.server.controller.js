@@ -7,7 +7,11 @@ var mongoose = require('mongoose'),
 	passport = require('passport'),
 	User = mongoose.model('User'),
 	_ = require('lodash'),
-	log = require('../../config/logger');
+	log = require('../../config/logger'),
+	cipher = require('../util/cipher'),
+	User = require('mongoose').model('User'),
+	jsonTransformerTemplate = require('../util/jsonTransformerTemplate'),
+	transform = require('jsonpath-object-transform');
 
 /**
  * Get the error message from error object
@@ -46,7 +50,7 @@ exports.signup = function(req, res) {
 
 	// Add missing user fields
 	user.profile.provider = 'local';
-	user.profile.contacts.isEmailVerified = false;
+	user.profile.contacts.emailVerification.isEmailVerified = false;
 	user.profile.contacts.isMobileVerified = false;
 	user.hashSaltPassword();
 	// Then save the user 
@@ -95,22 +99,25 @@ exports.update = function(req, res) {
 	var user = req.user;
 	var message = null;
 
-	// For security measurement we remove the roles from the req.body object
-	// Else hackers can add themselves as ADMIN role user
-	delete req.body.roles;
 	if (user) {
-		// Merge existing user
 		var newUser = req.body;
 		if(newUser.profile){
-			delete newUser.profile.userName;
-			delete newUser.profile.password;
-			delete newUser.profile.salt;
 			if(newUser.profile.contacts){
 				// Ensuring isMobileVerified is not changed in this API
 				var mobileObj = newUser.profile.contacts.mobile;
+				if(mobileObj && 
+					((mobileObj.mCountryCode && !mobileObj.mNumber) ||
+						(!mobileObj.mCountryCode && mobileObj.mNumber))){
+					// TODO this below send() is causing "Can't set headers after they are sent."
+					// FIX THIS ERROR
+					res.status(400).send({
+						message: 'MobileNo. or CountryCode missing'
+					});
+				}
 				if(mobileObj && mobileObj.mCountryCode && mobileObj.mNumber){
 					if(mobileObj.mCountryCode===user.profile.contacts.mobile.mCountryCode
 						&& mobileObj.mNumber===user.profile.contacts.mobile.mNumber){
+						// Checking if mobile No. is not modified then it be not part of update obj
 						delete newUser.profile.contacts.mobile;
 						delete newUser.profile.contacts.isMobileVerified;
 					}else{
@@ -120,46 +127,77 @@ exports.update = function(req, res) {
 					delete newUser.profile.contacts.isMobileVerified; 
 				}
 				// Ensuring isEmailVerified is not changed in this API
+				if(newUser.profile.contacts.emailVerification){
+					delete newUser.profile.contacts.emailVerification; 
+				}
 				if(newUser.profile.contacts.email && newUser.profile.contacts.email!==user.profile.contacts.email){
-					newUser.profile.contacts.isEmailVerified=false;
-				}else{
-					delete newUser.profile.contacts.isEmailVerified; 
+					newUser.profile.contacts.emailVerification={"isEmailVerified":false};
 				}
 			}
+			newUser.profile.updated = Date.now();
 			// Lodash merge() will merges Src and Dest Object inside Parent Object
-			user.profile = _.merge(user.profile, newUser.profile);
-		} else if(newUser.customer){
-			// Lodash extend() will not merge child Src Object and child Dest Object inside Parent Object
-			user.customer = _.extend(user.customer, newUser.customer);
-		} else if(newUser.carrier){
-			// Lodash extend() will not merge child Src Object and child Dest Object inside Parent Object
-			user.carrier = _.extend(user.carrier, newUser.carrier);
+			// user.profile = _.merge(user.profile, newUser.profile);
 		}
 
-		user.updated = Date.now();
-		// TODO: We should use user.update() here to save heavy save operation and avoid running into concurrency issues
-		user.save(function(err) {
-			if (err) {
+		var transformedUser = transform(newUser, jsonTransformerTemplate.userUpdateTemplate);
+		User.findOneAndUpdate({"profile.userName": user.profile.userName}, { $set: transformedUser}, {new: true}, function(err, updateUser){
+		    if (err) {
 				return res.status(400).send({
 					message: getErrorMessage(err)
 				});
 			} else {
-				//user.profile.password = undefined;
-				//user.profile.salt = undefined;
-				req.login(user, function(err) {
+				req.login(updateUser, function(err) {
 					if (err) {
 						res.status(400).send(err);
 					} else {
-						res.jsonp(user);
+						res.jsonp(updateUser);
 					}
 				});
 			}
 		});
 	} else {
-		res.status(400).send({
+		res.status(401).send({
 			message: 'User is not signed in'
 		});
 	}
+};
+
+/**
+ * Verify user's new email's token
+ */
+exports.verifyEmailToken = function(req, res) {
+	// Init Variables
+	var token = req.query.tkn;
+	var message = null;
+	var date = new Date().toISOString();
+
+	// TODO: exports.update() if updating email should send out email with Token
+
+	var dt = cipher.decrypt(token);
+	var et = cipher.encrypt(date + ':|:' + 'sunny.leotechno@gmail.com');
+
+	console.log('encrypt: '+et);
+	console.log('decrypt: '+dt);
+	res.status(200).send({
+		message: 'Email verified'
+	});
+	// Add missing user fields
+/*	user.profile.provider = 'local';
+	user.profile.contacts.emailVerification.isEmailVerified = false;
+	user.profile.contacts.isMobileVerified = false;
+	user.hashSaltPassword();
+	// Then save the user 
+	user.save(function(err) {
+		if (err) {
+			res.status(400).send({
+				message: getErrorMessage(err)
+			});
+		} else {
+			res.status(200).send({
+				message: 'User registration success'
+			});
+		}
+	});*/
 };
 
 /**
@@ -214,7 +252,7 @@ exports.changePassword = function(req, res) {
 			}
 		});
 	} else {
-		res.status(400).send({
+		res.status(401).send({
 			message: 'User is not signed in'
 		});
 	}
@@ -225,7 +263,7 @@ exports.changePassword = function(req, res) {
  */
 exports.signout = function(req, res) {
 	req.logout();
-	res.redirect('/');
+	// res.redirect('/');  // TODO Uncomment this line once UI is ready
 };
 
 /**
@@ -233,15 +271,12 @@ exports.signout = function(req, res) {
  */
 exports.me = function(req, res) {
 	if(req.user){
-		//req.user.profile.password = undefined;
-		//req.user.profile.salt = undefined;
 		res.jsonp(req.user || null);
 	} else {
-		res.status(400).send({
+		res.status(401).send({
 			message: 'User is not signed in'
 		});
 	}
-	//res.jsonp(req.user || null);
 };
 
 /**

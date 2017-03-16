@@ -43,6 +43,8 @@ module.exports = {
 		clientSecret: process.env.LINKEDIN_SECRET || 'APP_SECRET',
 		callbackURL: 'http://localhost:3000/auth/linkedin/callback'
 	},
-	sessionSecret: 'pickCDAAA',
-	sessionCollection: 'sessions'
+	sessionSecret: process.env.SESSION_SECRET || 'pickCDAAA',
+	sessionCollection: 'sessions',
+	cipherAlgorithm: process.env.CIPHER_ALGORITHM || 'aes-256-ctr',
+	cipherPassword: process.env.CIPHER_PASSWORD || 'd6F3Efeq3a977s2d1'
 };

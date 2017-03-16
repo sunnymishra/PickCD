@@ -85,10 +85,19 @@ var UserSchema = new Schema({
 				validate: [validateLocalStrategyProperty, 'Please fill in your email'],
 				match: [/.+\@.+\..+/, 'Please fill a valid email address']
 			},
-			isEmailVerified: {
-				type: Boolean,
-				default: false
+			emailVerification: {
+				isEmailVerified: {
+					type: Boolean,
+					default: false
+				},
+				emailVerificationToken: {
+					type: String
+				},
+				tokenValidTill: {
+					type: Date
+				}
 			},
+
 			mobile:{
 				mCountryCode: {
 					type: String,

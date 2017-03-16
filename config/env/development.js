@@ -22,6 +22,8 @@ module.exports = {
 		clientSecret: 'APP_SECRET',
 		callbackURL: 'http://localhost:3000/auth/linkedin/callback'
 	},
-	sessionSecret: 'pickCDAAA',
-	sessionCollection: 'sessions'
+	sessionSecret: 'pickCD123',
+	sessionCollection: 'sessions',
+	cipherAlgorithm: 'aes-256-ctr',
+	cipherPassword: 'abcdefg'
 };
